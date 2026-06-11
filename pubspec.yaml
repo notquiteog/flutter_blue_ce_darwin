@@ -10,7 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue_plus_platform_interface: 7.0.0
+  flutter_blue_plus_platform_interface:
+    git:
+      url: https://github.com/notquiteog/flutter_blue_plus_platform_interface.git
+      ref: main
 
 dev_dependencies:
   flutter_lints: ^5.0.0
