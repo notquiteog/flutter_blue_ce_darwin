@@ -12,7 +12,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#define NAMESPACE @"flutter_blue_plus"
+#define NAMESPACE @"flutter_blue_ce"
 
 @interface FlutterBluePlusPlugin : NSObject<FlutterPlugin, CBCentralManagerDelegate, CBPeripheralDelegate>
 @end

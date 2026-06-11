@@ -1,10 +1,10 @@
-# flutter_blue_plus_darwin
+# flutter_blue_ce_darwin
 
-The iOS and macOS implementation of [`flutter_blue_plus`][1].
+The iOS and macOS implementation of [`flutter_blue_ce`][1].
 
 ## Usage
 
-This package is [endorsed][2], which means you can simply use `flutter_blue_plus`
+This package is [endorsed][2], which means you can simply use `flutter_blue_ce`
 normally. This package will be automatically included in your app when you do,
 so you do not need to add it to your `pubspec.yaml`.
 
@@ -22,5 +22,5 @@ flutter:
   disable-swift-package-manager: true
 ```
 
-[1]: https://pub.dev/packages/flutter_blue_plus
+[1]: https://pub.dev/packages/flutter_blue_ce
 [2]: https://flutter.dev/to/endorsed-federated-plugin

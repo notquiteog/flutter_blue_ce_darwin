@@ -3,28 +3,38 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
+import 'package:flutter_blue_ce_platform_interface/flutter_blue_ce_platform_interface.dart';
 
 final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
   @visibleForTesting
-  final methodChannel = const MethodChannel('flutter_blue_plus/methods');
+  final methodChannel = const MethodChannel('flutter_blue_ce/methods');
 
   var _didRestart = false;
   var _logLevel = LogLevel.none;
   var _logColor = true;
 
-  final _onAdapterStateChangedController = StreamController<BmBluetoothAdapterState>.broadcast();
-  final _onCharacteristicReceivedController = StreamController<BmCharacteristicData>.broadcast();
-  final _onCharacteristicWrittenController = StreamController<BmCharacteristicData>.broadcast();
-  final _onConnectionStateChangedController = StreamController<BmConnectionStateResponse>.broadcast();
-  final _onDescriptorReadController = StreamController<BmDescriptorData>.broadcast();
-  final _onDescriptorWrittenController = StreamController<BmDescriptorData>.broadcast();
-  final _onDiscoveredServicesController = StreamController<BmDiscoverServicesResult>.broadcast();
-  final _onMtuChangedController = StreamController<BmMtuChangedResponse>.broadcast();
+  final _onAdapterStateChangedController =
+      StreamController<BmBluetoothAdapterState>.broadcast();
+  final _onCharacteristicReceivedController =
+      StreamController<BmCharacteristicData>.broadcast();
+  final _onCharacteristicWrittenController =
+      StreamController<BmCharacteristicData>.broadcast();
+  final _onConnectionStateChangedController =
+      StreamController<BmConnectionStateResponse>.broadcast();
+  final _onDescriptorReadController =
+      StreamController<BmDescriptorData>.broadcast();
+  final _onDescriptorWrittenController =
+      StreamController<BmDescriptorData>.broadcast();
+  final _onDiscoveredServicesController =
+      StreamController<BmDiscoverServicesResult>.broadcast();
+  final _onMtuChangedController =
+      StreamController<BmMtuChangedResponse>.broadcast();
   final _onNameChangedController = StreamController<BmNameChanged>.broadcast();
   final _onReadRssiController = StreamController<BmReadRssiResult>.broadcast();
-  final _onScanResponseController = StreamController<BmScanResponse>.broadcast();
-  final _onServicesResetController = StreamController<BmBluetoothDevice>.broadcast();
+  final _onScanResponseController =
+      StreamController<BmScanResponse>.broadcast();
+  final _onServicesResetController =
+      StreamController<BmBluetoothDevice>.broadcast();
 
   @override
   Stream<BmBluetoothAdapterState> get onAdapterStateChanged {
@@ -91,33 +101,23 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
   }
 
   @override
-  Future<bool> connect(
-    BmConnectRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'connect',
-      request.toMap(),
-    ) == true;
+  Future<bool> connect(BmConnectRequest request) async {
+    return await _callDarwinMethod<bool>('connect', request.toMap()) == true;
   }
 
   @override
-  Future<bool> disconnect(
-    BmDisconnectRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'disconnect',
-      request.remoteId.str,
-    ) == true;
+  Future<bool> disconnect(BmDisconnectRequest request) async {
+    return await _callDarwinMethod<bool>('disconnect', request.remoteId.str) ==
+        true;
   }
 
   @override
-  Future<bool> discoverServices(
-    BmDiscoverServicesRequest request,
-  ) async {
+  Future<bool> discoverServices(BmDiscoverServicesRequest request) async {
     return await _callDarwinMethod<bool>(
-      'discoverServices',
-      request.remoteId.str,
-    ) == true;
+          'discoverServices',
+          request.remoteId.str,
+        ) ==
+        true;
   }
 
   @override
@@ -125,9 +125,7 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
     BmBluetoothAdapterNameRequest request,
   ) async {
     return BmBluetoothAdapterName(
-      adapterName: await _callDarwinMethod(
-        'getAdapterName',
-      ),
+      adapterName: await _callDarwinMethod('getAdapterName'),
     );
   }
 
@@ -136,139 +134,92 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
     BmBluetoothAdapterStateRequest request,
   ) async {
     return BmBluetoothAdapterState.fromMap(
-      await _callDarwinMethod(
-        'getAdapterState',
-      ),
+      await _callDarwinMethod('getAdapterState'),
     );
   }
 
   @override
-  Future<BmDevicesList> getSystemDevices(
-    BmSystemDevicesRequest request,
-  ) async {
+  Future<BmDevicesList> getSystemDevices(BmSystemDevicesRequest request) async {
     return BmDevicesList.fromMap(
-      await _callDarwinMethod(
-        'getSystemDevices',
-        request.toMap(),
-      ),
+      await _callDarwinMethod('getSystemDevices', request.toMap()),
     );
   }
 
   @override
-  Future<bool> isSupported(
-    BmIsSupportedRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'isSupported',
-    ) == true;
+  Future<bool> isSupported(BmIsSupportedRequest request) async {
+    return await _callDarwinMethod<bool>('isSupported') == true;
   }
 
   @override
-  Future<bool> readCharacteristic(
-    BmReadCharacteristicRequest request,
-  ) async {
+  Future<bool> readCharacteristic(BmReadCharacteristicRequest request) async {
     return await _callDarwinMethod<bool>(
-      'readCharacteristic',
-      request.toMap(),
-    ) == true;
+          'readCharacteristic',
+          request.toMap(),
+        ) ==
+        true;
   }
 
   @override
-  Future<bool> readDescriptor(
-    BmReadDescriptorRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'readDescriptor',
-      request.toMap(),
-    ) == true;
+  Future<bool> readDescriptor(BmReadDescriptorRequest request) async {
+    return await _callDarwinMethod<bool>('readDescriptor', request.toMap()) ==
+        true;
   }
 
   @override
-  Future<bool> readRssi(
-    BmReadRssiRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'readRssi',
-      request.remoteId.str,
-    ) == true;
+  Future<bool> readRssi(BmReadRssiRequest request) async {
+    return await _callDarwinMethod<bool>('readRssi', request.remoteId.str) ==
+        true;
   }
 
   @override
-  Future<bool> setLogLevel(
-    BmSetLogLevelRequest request,
-  ) async {
+  Future<bool> setLogLevel(BmSetLogLevelRequest request) async {
     _logLevel = request.logLevel;
     _logColor = request.logColor;
 
     return await _callDarwinMethod<bool>(
-      'setLogLevel',
-      request.logLevel.index,
-    ) == true;
+          'setLogLevel',
+          request.logLevel.index,
+        ) ==
+        true;
   }
 
   @override
-  Future<bool> setNotifyValue(
-    BmSetNotifyValueRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'setNotifyValue',
-      request.toMap(),
-    ) == true;
+  Future<bool> setNotifyValue(BmSetNotifyValueRequest request) async {
+    return await _callDarwinMethod<bool>('setNotifyValue', request.toMap()) ==
+        true;
   }
 
   @override
-  Future<bool> setOptions(
-    BmSetOptionsRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'setOptions',
-      request.toMap(),
-    ) == true;
+  Future<bool> setOptions(BmSetOptionsRequest request) async {
+    return await _callDarwinMethod<bool>('setOptions', request.toMap()) == true;
   }
 
   @override
-  Future<bool> startScan(
-    BmScanSettings request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'startScan',
-      request.toMap(),
-    ) == true;
+  Future<bool> startScan(BmScanSettings request) async {
+    return await _callDarwinMethod<bool>('startScan', request.toMap()) == true;
   }
 
   @override
-  Future<bool> stopScan(
-    BmStopScanRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'stopScan',
-    ) == true;
+  Future<bool> stopScan(BmStopScanRequest request) async {
+    return await _callDarwinMethod<bool>('stopScan') == true;
   }
 
   @override
-  Future<bool> writeCharacteristic(
-    BmWriteCharacteristicRequest request,
-  ) async {
+  Future<bool> writeCharacteristic(BmWriteCharacteristicRequest request) async {
     return await _callDarwinMethod<bool>(
-      'writeCharacteristic',
-      request.toMap(),
-    ) == true;
+          'writeCharacteristic',
+          request.toMap(),
+        ) ==
+        true;
   }
 
   @override
-  Future<bool> writeDescriptor(
-    BmWriteDescriptorRequest request,
-  ) async {
-    return await _callDarwinMethod<bool>(
-      'writeDescriptor',
-      request.toMap(),
-    ) == true;
+  Future<bool> writeDescriptor(BmWriteDescriptorRequest request) async {
+    return await _callDarwinMethod<bool>('writeDescriptor', request.toMap()) ==
+        true;
   }
 
-  Future<T?> _callDarwinMethod<T>(
-    String method, [
-    dynamic arguments,
-  ]) async {
+  Future<T?> _callDarwinMethod<T>(String method, [dynamic arguments]) async {
     // restart platform
     if (!_didRestart && method != "setOptions" && method != "setLogLevel") {
       await _flutterRestart();
@@ -276,7 +227,7 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
 
     // set platform method handler
     methodChannel.setMethodCallHandler(_methodCallHandler);
-  
+
     // log args
     if (_logLevel == LogLevel.verbose) {
       var func = '<$method>';
@@ -312,9 +263,7 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
     _didRestart = true;
   }
 
-  Future<void> _methodCallHandler(
-    MethodCall call,
-  ) async {
+  Future<void> _methodCallHandler(MethodCall call) async {
     // log result
     if (_logLevel == LogLevel.verbose) {
       var func = '[[ ${call.method} ]]';
@@ -331,82 +280,56 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
     switch (call.method) {
       case 'OnAdapterStateChanged':
         return _onAdapterStateChangedController.add(
-          BmBluetoothAdapterState.fromMap(
-            call.arguments,
-          ),
+          BmBluetoothAdapterState.fromMap(call.arguments),
         );
       case 'OnCharacteristicReceived':
         return _onCharacteristicReceivedController.add(
-          BmCharacteristicData.fromMap(
-            call.arguments,
-          ),
+          BmCharacteristicData.fromMap(call.arguments),
         );
       case 'OnCharacteristicWritten':
         return _onCharacteristicWrittenController.add(
-          BmCharacteristicData.fromMap(
-            call.arguments,
-          ),
+          BmCharacteristicData.fromMap(call.arguments),
         );
       case 'OnConnectionStateChanged':
         return _onConnectionStateChangedController.add(
-          BmConnectionStateResponse.fromMap(
-            call.arguments,
-          ),
+          BmConnectionStateResponse.fromMap(call.arguments),
         );
       case 'OnDescriptorRead':
         return _onDescriptorReadController.add(
-          BmDescriptorData.fromMap(
-            call.arguments,
-          ),
+          BmDescriptorData.fromMap(call.arguments),
         );
       case 'OnDescriptorWritten':
         return _onDescriptorWrittenController.add(
-          BmDescriptorData.fromMap(
-            call.arguments,
-          ),
+          BmDescriptorData.fromMap(call.arguments),
         );
       case 'OnDiscoveredServices':
         return _onDiscoveredServicesController.add(
-          BmDiscoverServicesResult.fromMap(
-            call.arguments,
-          ),
+          BmDiscoverServicesResult.fromMap(call.arguments),
         );
       case 'OnMtuChanged':
         return _onMtuChangedController.add(
-          BmMtuChangedResponse.fromMap(
-            call.arguments,
-          ),
+          BmMtuChangedResponse.fromMap(call.arguments),
         );
       case 'OnNameChanged':
         return _onNameChangedController.add(
-          BmNameChanged.fromMap(
-            call.arguments,
-          ),
+          BmNameChanged.fromMap(call.arguments),
         );
       case 'OnReadRssi':
         return _onReadRssiController.add(
-          BmReadRssiResult.fromMap(
-            call.arguments,
-          ),
+          BmReadRssiResult.fromMap(call.arguments),
         );
       case 'OnScanResponse':
         return _onScanResponseController.add(
-          BmScanResponse.fromMap(
-            call.arguments,
-          ),
+          BmScanResponse.fromMap(call.arguments),
         );
       case 'OnServicesReset':
         return _onServicesResetController.add(
-          BmBluetoothDevice.fromMap(
-            call.arguments,
-          ),
+          BmBluetoothDevice.fromMap(call.arguments),
         );
     }
   }
 
-  String _prettyPrint(
-    dynamic data,
-  ) {
+  String _prettyPrint(dynamic data) {
     if (data is Map || data is List) {
       return JsonEncoder.withIndent('  ').convert(data);
     } else {

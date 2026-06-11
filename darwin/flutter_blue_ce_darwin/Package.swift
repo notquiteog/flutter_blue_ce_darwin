@@ -4,18 +4,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "flutter_blue_plus_darwin",
+    name: "flutter_blue_ce_darwin",
     platforms: [
         .iOS("12.0"),
         .macOS("10.14"),
     ],
     products: [
-        .library(name: "flutter-blue-plus-darwin", targets: ["flutter_blue_plus_darwin"])
+        .library(name: "flutter-blue-ce-darwin", targets: ["flutter_blue_ce_darwin"])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "flutter_blue_plus_darwin",
+            name: "flutter_blue_ce_darwin",
             dependencies: [],
             resources: [
                 // TODO: If your plugin requires a privacy manifest
@@ -30,7 +30,7 @@ let package = Package(
                 // https://developer.apple.com/documentation/xcode/bundling-resources-with-a-swift-package
             ],
             cSettings: [
-                .headerSearchPath("include/flutter_blue_plus_darwin")
+                .headerSearchPath("include/flutter_blue_ce_darwin")
             ]
         )
     ]
