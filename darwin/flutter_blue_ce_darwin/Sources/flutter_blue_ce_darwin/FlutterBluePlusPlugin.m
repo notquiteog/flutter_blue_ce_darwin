@@ -39,6 +39,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 @property(nonatomic) NSMutableDictionary *servicesToDiscover;
 @property(nonatomic) NSMutableDictionary *includedServicesToDiscover;
 @property(nonatomic) NSMutableDictionary *characteristicsToDiscover;
+@property(nonatomic) NSMutableDictionary *discoveryErrors;
 @property(nonatomic) NSMutableDictionary *didWriteWithoutResponse;
 @property(nonatomic) NSMutableDictionary *peripheralMtu;
 @property(nonatomic) NSMutableDictionary *writeChrs;
@@ -64,6 +65,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     instance.servicesToDiscover = [NSMutableDictionary new];
     instance.includedServicesToDiscover = [NSMutableDictionary new];
     instance.characteristicsToDiscover = [NSMutableDictionary new];
+    instance.discoveryErrors = [NSMutableDictionary new];
     instance.didWriteWithoutResponse = [NSMutableDictionary new];
     instance.peripheralMtu = [NSMutableDictionary new];
     instance.writeChrs = [NSMutableDictionary new];
@@ -866,6 +868,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     self.servicesToDiscover[remoteId] = [NSMutableArray new];
     self.includedServicesToDiscover[remoteId] = [NSMutableArray new];
     self.characteristicsToDiscover[remoteId] = [NSMutableArray new];
+    self.discoveryErrors[remoteId] = [NSNull null];
 }
 
 - (void)clearDiscoveryForPeripheral:(CBPeripheral *)peripheral
@@ -874,6 +877,22 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     [self.servicesToDiscover removeObjectForKey:remoteId];
     [self.includedServicesToDiscover removeObjectForKey:remoteId];
     [self.characteristicsToDiscover removeObjectForKey:remoteId];
+    [self.discoveryErrors removeObjectForKey:remoteId];
+}
+
+- (void)recordDiscoveryError:(NSError *)error peripheral:(CBPeripheral *)peripheral
+{
+    if (error == nil)
+    {
+        return;
+    }
+
+    NSString *remoteId = [self remoteIdForPeripheral:peripheral];
+    id existingError = self.discoveryErrors[remoteId];
+    if (existingError == nil || existingError == [NSNull null])
+    {
+        self.discoveryErrors[remoteId] = error;
+    }
 }
 
 - (void)addCharacteristicMatchesFromService:(CBService *)service
@@ -1114,6 +1133,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     [self.servicesToDiscover removeAllObjects];
     [self.includedServicesToDiscover removeAllObjects];
     [self.characteristicsToDiscover removeAllObjects];
+    [self.discoveryErrors removeAllObjects];
     [self.didWriteWithoutResponse removeAllObjects];
     [self.peripheralMtu removeAllObjects];
     [self.writeChrs removeAllObjects];
@@ -1463,6 +1483,8 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         return;
     }
 
+    [self recordDiscoveryError:error peripheral:peripheral];
+
     if (servicesToDiscover.count > 0 || includedServicesToDiscover.count > 0 || characteristicsToDiscover.count > 0)
     {
         return; // Still discovering
@@ -1478,13 +1500,20 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
                                       toArray:services];
     }
 
+    NSError *finalError = error;
+    id storedError = self.discoveryErrors[remoteId];
+    if (storedError != nil && storedError != [NSNull null])
+    {
+        finalError = (NSError *)storedError;
+    }
+
     // See BmDiscoverServicesResult
     NSDictionary* response = @{
         @"remote_id":       [peripheral.identifier UUIDString],
         @"services":        services,
-        @"success":         error == nil ? @(1) : @(0),
-        @"error_string":    error ? [error localizedDescription] : @"success",
-        @"error_code":      error ? @(error.code) : @(0),
+        @"success":         finalError == nil ? @(1) : @(0),
+        @"error_string":    finalError ? [finalError localizedDescription] : @"success",
+        @"error_code":      finalError ? @(finalError.code) : @(0),
     };
 
     [self clearDiscoveryForPeripheral:peripheral];
