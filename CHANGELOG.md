@@ -2,6 +2,7 @@
 * Rename the forked package to `flutter_blue_ce_darwin`.
 * Preserve unspecified `setOptions` values and support concurrent service discovery per peripheral.
 * Improve service/characteristic resolution when duplicate service UUIDs are present.
+* Preserve the first CoreBluetooth discovery error until the final discovery result is emitted.
 
 ## 4.0.1
 * fix unrecognized selector sent to instance (regression from 4.0.0)
